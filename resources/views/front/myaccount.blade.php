@@ -31,6 +31,9 @@
 								    <li class="nav-item">
 								        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#tab-account" role="tab" aria-controls="tab-account" aria-selected="false">Account Details</a>
 								    </li>
+									<li class="nav-item">
+								        <a class="nav-link" id="tab-account-link" data-toggle="tab" href="#prescription" role="tab" aria-controls="tab-account" aria-selected="false">Prescription</a>
+								    </li>
 								</ul>
 	                		</aside><!-- End .col-lg-3 -->
 
@@ -114,6 +117,64 @@
 			            						<i class="icon-long-arrow-right"></i>
 			                				</button>
 			                			</form>
+								    </div><!-- .End .tab-pane -->
+
+									<div class="tab-pane fade" id="prescription" role="tabpanel" aria-labelledby="tab-account-link">
+								    	<form action="{{route('pharmacy.front.user.uploadprescription')}}" method="post" enctype="multipart/form-data">
+											{{csrf_field()}}
+			                				<div class="row">
+			                					<div class="col-sm-12">
+			                						<label>Prescription</label>
+			                						<input type="file" class="form-control" name="image">
+			                					</div><!-- End .col-sm-6 -->
+			                				</div><!-- End .row -->
+
+		                					<button type="submit" class="btn btn-outline-primary-2">
+			                					<span>SAVE CHANGES</span>
+			            						<i class="icon-long-arrow-right"></i>
+			                				</button>
+			                			</form>
+
+										@if(count($prescs)>0)
+											<table class="table table-wishlist table-mobile" style="margin-top: 40px;">
+												<thead>
+													<tr>
+														<th>Prescription</th>
+														<th>Approved By</th>
+														<th>Status</th>
+													</tr>
+												</thead>
+
+												<tbody>
+													@foreach($prescs as $presc)
+													<tr>
+														<td class="product-col">
+															<div class="product">
+																<figure class="product-media">
+																	<a>
+																		<img src="{{asset('presc/'.$presc->image)}}" alt="Prescription image">
+																	</a>
+																</figure>
+															</div><!-- End .product -->
+														</td>
+														<td>
+															@if($presc->pharmacist_id)
+																{{$presc->pharmacist->name}}
+															@else
+																Waiting For Approval
+															@endif
+														</td>
+														<td>
+															@if($presc->status == "pending") Pending @endif
+															@if($presc->status == "approved") Approved @endif
+														</td>
+													</tr>
+													@endforeach
+												</tbody>
+											</table>
+										@else
+											<p>No order has been made yet.</p>
+										@endif
 								    </div><!-- .End .tab-pane -->
 								</div>
 	                		</div><!-- End .col-lg-9 -->

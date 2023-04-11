@@ -14,6 +14,7 @@ use App\Models\MedicineType;
 use Auth;
 use DB;
 use Str;
+use App\Models\Prescription;
 class FrontendController extends Controller
 {
     public function index()
@@ -82,7 +83,8 @@ class FrontendController extends Controller
             ->where('user_id', Auth::user()->id)
             ->select('orders.*', 'products.product_name', 'products.mrp', 'products.image')
             ->get();
-        return view('front.myaccount',['orders'=>$order]);
+        $presc = Prescription::where('user_id',Auth::user()->id)->get();
+        return view('front.myaccount',['orders'=>$order, 'prescs'=>$presc]);
     }
 
     public function viewCart(){
@@ -208,6 +210,37 @@ class FrontendController extends Controller
         return back()->with([
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
+    }
+
+    public function logoutPharm(Request $request){
+        Auth::guard('pharm')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->intended(route('pharmacy.pharmacist.login'));
+    }
+
+    public function logoutLog(Request $request){
+        Auth::guard('log')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->intended(route('pharmacy.log.login'));
+    }
+
+    public function uploadPrescription(Request $request){
+        $presc = new Prescription();
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $fileOriginalName = $image->getClientOriginalName();
+            $path = public_path('presc/');
+            $fileName = date('Ymd') . '-' . Str::random(5) . '-' . $fileOriginalName;
+            $image->move($path, $fileName);
+            $presc->image = $fileName;
+        }
+
+        $presc->user_id = Auth::user()->id;
+        $presc->status = 'pending';
+        $presc->save();
+        return redirect()->back();
     }
 }
 

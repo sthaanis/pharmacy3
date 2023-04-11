@@ -38,19 +38,13 @@
             <li class="nav-item">
                 <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-building"></i>
-                    <p>Company <i class="right fas fa-angle-left"></i></p>
+                    <p>Prescription <i class="right fas fa-angle-left"></i></p>
                 </a>
                 <ul class="nav nav-treeview">
                     <li class="nav-item">
-                        <a href="{{route('pharmacy.admin.company.index')}}" class="nav-link">
+                        <a href="{{route('pharmacy.pharm.prescription')}}" class="nav-link">
                         <i class="nav-icon fas fa-list"></i>
-                        <p>Company List</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{route('pharmacy.admin.company.new')}}" class="nav-link">
-                        <i class="fas fa-plus nav-icon"></i>
-                        <p>Add Company</p>
+                        <p>Prescription List</p>
                         </a>
                     </li>
                 </ul>

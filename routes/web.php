@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\LogisticController;
 use App\Http\Controllers\Admin\PharmacistController;
+use App\Http\Controllers\Admin\OrderController;
 
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\PharmController;
@@ -41,6 +42,7 @@ Route::post('/cart/remove', [FrontendController::class, 'removeItem'])->name('ph
 Route::get('/filter-by-category', [FrontendController::class, 'filterByCategory'])->name('pharmacy.front.shop.filterbyCategory');
 Route::get('/filter-by-medicine', [FrontendController::class, 'filterByMedicine'])->name('pharmacy.front.shop.filterbyMedicine');
 Route::get('/filter-by-brand', [FrontendController::class, 'filterByBrand'])->name('pharmacy.front.shop.filterbyBrand');
+Route::post('/upload-prescription', [FrontendController::class, 'uploadPrescription'])->name('pharmacy.front.user.uploadprescription');
 
 Route::get('/shop',[FrontendController::class, 'shop'])->name('pharmacy.front.shop');
 Route::get('/medicine',[FrontendController::class, 'medicine'])->name('pharmacy.front.shop.medicine');
@@ -52,14 +54,18 @@ Route::group(['prefix'=>'pharmacist'],function(){
   Route::get('/', [FrontendController::class, 'pharmacistLogin'])->name('pharmacy.pharmacist.login');
   Route::get('/dashboard', [PharmController::class, 'index'])->name('pharmacy.pharm.dashboard');
   Route::post('/authenticate-pharm', [FrontendController::class, 'authenticatePharm'])->name('pharmacy.pharm.authenticate');
-  Route::get('/logout', [FrontendController::class, 'logoutPharm'])->name('pharmacy.pharm.logout');
+  Route::get('/logout-pharm', [FrontendController::class, 'logoutPharm'])->name('pharmacy.pharm.logout');
+  Route::get('/prescription', [PharmController::class, 'prescription'])->name('pharmacy.pharm.prescription');
+  Route::get('/approve-prescription/{id}', [PharmController::class, 'approvePrescription'])->name('pharmacy.pharm.approve.prescription');
 });
 
 Route::group(['prefix'=>'logistic'],function(){
   Route::get('/', [FrontendController::class, 'LogisticLogin'])->name('pharmacy.log.login');
   Route::get('/dashboard', [LogController::class, 'index'])->name('pharmacy.log.dashboard');
   Route::post('/authenticate-log', [FrontendController::class, 'authenticateLog'])->name('pharmacy.log.authenticate');
-  Route::get('/logout', [FrontendController::class, 'logoutLog'])->name('pharmacy.log.logout');
+  Route::get('/logout-log', [FrontendController::class, 'logoutLog'])->name('pharmacy.log.logout');
+  Route::get('/orders', [LogController::class, 'order'])->name('pharmacy.log.order');
+  Route::get('/read-to-ship/{id}',[LogController::class, 'deliver'])->name('pharmacy.log.order.deliver');
 });
 
 Route::group(['prefix' => 'admin'], function () {
@@ -195,6 +201,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('/', [PharmacistController::class, 'index'])->name('pharmacy.admin.pharmacist.index');
     Route::get('/new', [PharmacistController::class, 'new'])->name('pharmacy.admin.pharmacist.new');
     Route::post('/save', [PharmacistController::class, 'save'])->name('pharmacy.admin.pharmacist.save');
+  });
+
+  Route::group(['prefix' => 'order'], function () {
+    Route::get('/', [OrderController::class, 'index'])->name('pharmacy.admin.order.index');
+    Route::get('/read-to-ship/{id}',[OrderController::class, 'ship'])->name('pharmacy.admin.order.ship');
   });
 
 });
